@@ -27,9 +27,13 @@ jobs:
         pip install -r requirements.txt
     
     - name: Instalar navegadores de Playwright
+      uses: microsoft/playwright-github-action@v1
+      with:
+        browsers: chromium
+    
+    - name: Verificar instalación de Playwright
       run: |
-        playwright install chromium
-        playwright install-deps chromium
+        playwright --version
     
     - name: Ejecutar scraper
       id: scraper
