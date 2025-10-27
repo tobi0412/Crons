@@ -16,6 +16,10 @@ def extract_price_value(text):
     Returns:
         int: Valor numérico extraído, None si no se puede extraer
     """
+    if not text or not isinstance(text, str):
+        print(f"    ⚠️ Texto inválido para extraer: {text}")
+        return None
+    
     # Primero buscar si hay un número seguido de 'k' o 'K'
     k_pattern = re.search(r'(\d+(?:[.,]\d+)?)\s*[kK]', text)
     if k_pattern:
@@ -24,11 +28,16 @@ def extract_price_value(text):
             # Si tiene punto o coma, es decimal: 15.5k = 15500
             if '.' in value_str or ',' in value_str:
                 value_float = float(value_str.replace(',', '.'))
-                return int(value_float * 1000)
+                result = int(value_float * 1000)
+                print(f"    ✓ Extraído con formato 'k' decimal: {value_str}k = {result}")
+                return result
             else:
                 # Si es entero: 15k = 15000
-                return int(value_str) * 1000
-        except:
+                result = int(value_str) * 1000
+                print(f"    ✓ Extraído con formato 'k' entero: {value_str}k = {result}")
+                return result
+        except Exception as e:
+            print(f"    ⚠️ Error al convertir valor con 'k': {e}")
             return None
     
     # Si no hay 'k', buscar números normales
@@ -40,10 +49,16 @@ def extract_price_value(text):
     
     if numbers:
         # Tomar el primer número encontrado y limpiar separadores de miles
-        value = numbers[0].replace(',', '').replace('.', '')
+        original_number = numbers[0]
+        value = original_number.replace(',', '').replace('.', '')
         try:
-            return int(value)
-        except:
+            result = int(value)
+            print(f"    ✓ Extraído como número normal: '{original_number}' = {result}")
+            return result
+        except Exception as e:
+            print(f"    ⚠️ Error al convertir número: {e}")
             return None
+    
+    print(f"    ❌ No se pudo extraer ningún valor de: '{text}'")
     return None
 

@@ -5,14 +5,14 @@ Script para ejecutar el scraper de FUTBIN
 """
 
 import sys
-import nodriver as uc
+import asyncio
 
 def run_scraper():
     """
     Función wrapper para ejecutar el scraper
     """
     try:
-        uc.loop().run_until_complete(run_main())
+        asyncio.run(run_main())
     except KeyboardInterrupt:
         print("\n⚠️ Ejecución interrumpida por el usuario")
         sys.exit(1)

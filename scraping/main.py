@@ -7,7 +7,6 @@ Script principal para ejecutar el scraper de FUTBIN
 import sys
 import json
 import asyncio
-import nodriver as uc
 from .scraper import scrape_futbin_cheapest
 
 
@@ -15,7 +14,7 @@ async def main():
     """
     Función principal asíncrona
     """
-    print("🚀 Iniciando scraper de FUTBIN con nodriver")
+    print("🚀 Iniciando scraper de FUTBIN con Playwright")
     print("=" * 50)
     
     results = await scrape_futbin_cheapest()
@@ -54,5 +53,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    uc.loop().run_until_complete(main())
+    asyncio.run(main())
 

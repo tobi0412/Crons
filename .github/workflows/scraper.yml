@@ -21,39 +21,22 @@ jobs:
       with:
         python-version: '3.11'
     
-    - name: Instalar Chrome y dependencias
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          chromium-browser \
-          chromium-chromedriver
-    
     - name: Instalar dependencias Python
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Verificar Chrome instalado
-      run: |
-        echo "=== Buscando ejecutables de Chrome ==="
-        which chromium-browser && chromium-browser --version || echo "chromium-browser no encontrado"
-        which chromium && chromium --version || echo "chromium no encontrado"
-        which google-chrome && google-chrome --version || echo "google-chrome no encontrado"
-        echo "=== Listando /usr/bin/chrom* ==="
-        ls -la /usr/bin/chrom* 2>/dev/null || echo "No se encontraron ejecutables chrome*"
-    
     - name: Ejecutar scraper
       id: scraper
       env:
         CI: 'true'
-        DISPLAY: ':99'
       run: |
         python run_scraper.py
     
-    - name: Notificar resultados del scraper
+    - name: Notificar resultados del scraper por ntfy
       env:
         NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-      if: success() || failure()
+      if: always()
       run: |
         python send_scraper_notification.py || true
       continue-on-error: true
