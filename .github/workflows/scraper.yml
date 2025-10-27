@@ -9,7 +9,7 @@ on:
 
 jobs:
   scrape:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest s
     timeout-minutes: 15
     
     steps:
@@ -26,8 +26,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
+   
     - name: Instalar navegadores de Playwright
-      run: python -m playwright install chromium --with-deps
+      uses: microsoft/playwright-github-action@v1
+      with:
+        
+        browsers: chromium
+   
     
     - name: Ejecutar scraper
       id: scraper
@@ -43,4 +48,3 @@ jobs:
       run: |
         python send_scraper_notification.py || true
       continue-on-error: true
-      
