@@ -35,8 +35,12 @@ jobs:
     
     - name: Verificar Chrome instalado
       run: |
-        which chromium-browser || echo "Chromium no encontrado"
-        chromium-browser --version || echo "No se puede obtener versión"
+        echo "=== Buscando ejecutables de Chrome ==="
+        which chromium-browser && chromium-browser --version || echo "chromium-browser no encontrado"
+        which chromium && chromium --version || echo "chromium no encontrado"
+        which google-chrome && google-chrome --version || echo "google-chrome no encontrado"
+        echo "=== Listando /usr/bin/chrom* ==="
+        ls -la /usr/bin/chrom* 2>/dev/null || echo "No se encontraron ejecutables chrome*"
     
     - name: Ejecutar scraper
       id: scraper

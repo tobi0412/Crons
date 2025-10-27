@@ -27,9 +27,29 @@ async def scrape_futbin_cheapest():
             if is_ci:
                 print("🤖 Modo CI detectado - configurando para GitHub Actions...")
                 
-                # Configuración para nodriver en CI
+                # Buscar el ejecutable de Chrome/Chromium
+                import shutil
+                chrome_paths = [
+                    '/usr/bin/chromium-browser',
+                    '/usr/bin/chromium',
+                    '/usr/bin/google-chrome',
+                    '/usr/bin/google-chrome-stable',
+                ]
+                
+                chrome_path = None
+                for path in chrome_paths:
+                    if shutil.which(path) or os.path.exists(path):
+                        chrome_path = path
+                        print(f"✅ Chrome encontrado en: {chrome_path}")
+                        break
+                
+                if not chrome_path:
+                    print("❌ No se encontró Chrome/Chromium")
+                    return None
+                
+                # Configuración para nodriver en CI con menos restricciones
                 config = uc.Config(
-                    browser_executable_path='/usr/bin/chromium-browser',
+                    browser_executable_path=chrome_path,
                     headless=True,
                     browser_args=[
                         '--no-sandbox',
@@ -38,21 +58,39 @@ async def scrape_futbin_cheapest():
                         '--disable-software-rasterizer',
                         '--disable-extensions',
                         '--disable-setuid-sandbox',
-                        '--single-process',
-                        '--no-zygote',
+                        '--disable-blink-features=AutomationControlled',
+                        '--window-size=1920,1080',
+                        '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
                     ]
                 )
-                browser = await uc.start(config=config)
+                
+                # Intentar iniciar el navegador con timeout
+                print("🔄 Iniciando navegador con configuración CI...")
+                browser = await asyncio.wait_for(
+                    uc.start(config=config),
+                    timeout=30
+                )
             else:
                 print("🤖 Iniciando navegador en modo headless...")
                 browser = await uc.start(headless=True)
                 
+        except asyncio.TimeoutError:
+            print("❌ Timeout al iniciar el navegador")
+            return None
         except Exception as init_error:
             print(f"❌ Error al inicializar el navegador: {init_error}")
             print(f"   Tipo: {type(init_error).__name__}")
             import traceback
             traceback.print_exc()
-            return None
+            
+            # Intentar con configuración más simple
+            print("\n🔄 Intentando con configuración simplificada...")
+            try:
+                browser = await uc.start(headless=True)
+                print("✅ Navegador iniciado con configuración simplificada")
+            except Exception as e2:
+                print(f"❌ También falló configuración simplificada: {e2}")
+                return None
         
         # Verificar que el navegador se inicializó
         if browser is None:
@@ -162,6 +200,8 @@ async def scrape_futbin_cheapest():
                 
         except Exception as e:
             print(f"❌ Error al buscar el elemento: {e}")
+            import traceback
+            traceback.print_exc()
             return None
             
     except Exception as e:
@@ -186,4 +226,3 @@ async def scrape_futbin_cheapest():
             except Exception as close_error:
                 print(f"⚠️ Error al cerrar navegador: {close_error}")
                 pass
-            
