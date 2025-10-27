@@ -2,6 +2,7 @@
 Módulo principal de scraping para FUTBIN
 """
 
+import os
 import nodriver as uc
 import asyncio
 from .price_extractor import extract_price_value
@@ -18,8 +19,25 @@ async def scrape_futbin_cheapest():
     browser = None
     try:
         print("🔄 Iniciando navegador...")
-        # Configurar para headless mode en CI
-        browser = await uc.start(headless=True)
+        
+        try:
+            # Siempre usa headless para compatibilidad
+            print("🤖 Iniciando navegador en modo headless...")
+            browser = await uc.start(headless=True)
+        except Exception as init_error:
+            print(f"❌ Error al inicializar el navegador: {init_error}")
+            print(f"   Tipo: {type(init_error).__name__}")
+            import traceback
+            traceback.print_exc()
+            return None
+        
+        # Verificar que el navegador se inicializó
+        if browser is None:
+            print("❌ Error: No se pudo inicializar el navegador (browser es None)")
+            print("   Verifica que Chrome/Chromium esté instalado")
+            return None
+        
+        print(f"✅ Navegador inicializado: {type(browser)}")
         
         print("🌐 Navegando a futbin.com...")
         start_page = await browser.get("https://www.futbin.com")
@@ -125,12 +143,24 @@ async def scrape_futbin_cheapest():
             
     except Exception as e:
         print(f"❌ Error general: {e}")
+        import traceback
+        traceback.print_exc()
         return None
     finally:
-        if browser:
+        if browser is not None:
             try:
-                await browser.stop()
-                print("🔒 Navegador cerrado")
-            except:
+                print("🔒 Cerrando navegador...")
+                # Verificar si browser tiene método stop y es awaitable
+                if hasattr(browser, 'stop'):
+                    stop_method = browser.stop
+                    # Verificar si es coroutine
+                    import inspect
+                    if inspect.iscoroutinefunction(stop_method):
+                        await stop_method()
+                    else:
+                        stop_method()
+                print("✅ Navegador cerrado")
+            except Exception as close_error:
+                print(f"⚠️ Error al cerrar navegador: {close_error}")
                 pass
 
