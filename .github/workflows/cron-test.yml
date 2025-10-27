@@ -3,7 +3,7 @@ name: Daily Email Cron Job
 on:
   # Se ejecuta una vez al día a las 9 AM UTC
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '0 15 * * *'
   # También se puede ejecutar manualmente
   workflow_dispatch:
 
@@ -32,17 +32,13 @@ jobs:
         echo "👤 Usuario: ${{ github.actor }}"
         echo "🔢 Commit: ${{ github.sha }}"
     
-    - name: Enviar email con SendGrid
+    - name: Enviar notificación con ntfy
       env:
-        MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
-        EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-        EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
       
       run: |
-        echo "MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}"
-        echo "EMAIL_FROM: ${{ secrets.EMAIL_FROM }}"
-        echo "EMAIL_TO: ${{ secrets.EMAIL_TO }}"
-        python send_email.py
+        echo "NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}"
+        python send_notification.py
     
     - name: Crear archivo de log
       run: |
@@ -50,7 +46,7 @@ jobs:
         echo "Ejecución: $(date)" >> logs/cron-log.txt
         echo "Usuario: ${{ github.actor }}" >> logs/cron-log.txt
         echo "Commit: ${{ github.sha }}" >> logs/cron-log.txt
-        echo "Email enviado: ✅" >> logs/cron-log.txt
+        echo "Notificación enviada: ✅" >> logs/cron-log.txt
         echo "---" >> logs/cron-log.txt
     
     - name: Mostrar contenido del log

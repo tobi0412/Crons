@@ -1,19 +1,19 @@
 # Crons
 
-Este es un repositorio privado para gestionar tareas programadas (crons) usando GitHub Actions con envío de emails.
+Este es un repositorio privado para gestionar tareas programadas (crons) usando GitHub Actions con notificaciones ntfy.
 
 ## Descripción
 
-Este repositorio contiene un cron job configurado con GitHub Actions que se ejecuta una vez al día (9 AM UTC) y envía un email de confirmación usando SendGrid.
+Este repositorio contiene un cron job configurado con GitHub Actions que se ejecuta una vez al día (3 PM UTC) y envía una notificación de confirmación usando ntfy.
 
 ## GitHub Actions
 
-### Cron Job Diario con Email
+### Cron Job Diario con Notificaciones
 
 El workflow se encuentra en `.github/workflows/cron-test.yml` y realiza las siguientes acciones:
 
-- ✅ Se ejecuta una vez al día a las 9 AM UTC (`0 9 * * *`)
-- ✅ Envía un email de confirmación usando SendGrid API
+- ✅ Se ejecuta una vez al día a las 3 PM UTC (`0 15 * * *`)
+- ✅ Envía una notificación de confirmación usando ntfy API
 - ✅ Muestra información del sistema y del repositorio
 - ✅ Genera logs de cada ejecución
 - ✅ Se puede ejecutar manualmente desde GitHub Actions
@@ -28,21 +28,24 @@ Para que el cron job funcione correctamente, necesitas configurar los siguientes
 
 #### Secrets Requeridos:
 
-- **`MAIL_API_KEY`**: Tu API key de SendGrid
-  - Obtén tu API key desde [SendGrid Dashboard](https://app.sendgrid.com/settings/api_keys)
-  
-- **`EMAIL_FROM`**: Email del remitente
-  - Debe estar verificado en SendGrid
-  - Ejemplo: `noreply@tudominio.com`
-  
-- **`EMAIL_TO`**: Email del destinatario
-  - Ejemplo: `tu-email@gmail.com`
+- **`NTFY_TOPIC`**: Tu tópico personalizado de ntfy
+  - Ve a [ntfy.sh](https://ntfy.sh) y crea un tópico personalizado
+  - Ejemplo: `mi-cron-job` (se convertirá en `https://ntfy.sh/mi-cron-job`)
+  - Puedes usar cualquier nombre que quieras, pero evita espacios y caracteres especiales
 
 ### Ejecutar manualmente
 
 1. Ve a la pestaña **Actions** en tu repositorio de GitHub
 2. Selecciona el workflow "Daily Email Cron Job"
 3. Haz clic en **Run workflow** → **Run workflow**
+
+## Configuración de ntfy
+
+Para recibir las notificaciones en tu dispositivo:
+
+1. **Descarga la app ntfy** desde [ntfy.sh/app](https://ntfy.sh/app)
+2. **Suscríbete a tu tópico** usando el mismo nombre que configuraste en `NTFY_TOPIC`
+3. **Recibirás notificaciones** cada vez que se ejecute el cron job
 
 ## Scripts locales
 
@@ -55,7 +58,11 @@ bash test-cron.sh
 # Ejecutar script en Python
 python3 test-cron.py
 
-# Ejecutar script de email (requiere variables de entorno)
+# Ejecutar script de notificación (requiere variables de entorno)
+export NTFY_TOPIC="mi-cron-job"
+python3 send_notification.py
+
+# Ejecutar script de email (requiere variables de entorno) - OPCIONAL
 export MAIL_API_KEY="tu_api_key"
 export EMAIL_FROM="tu_email@dominio.com"
 export EMAIL_TO="destinatario@email.com"
@@ -93,9 +100,10 @@ git push -u origin main
 
 Una vez configurados los secrets y subido a GitHub:
 1. Ve a la pestaña **Actions**
-2. El workflow se ejecutará automáticamente cada día a las 9 AM UTC
+2. El workflow se ejecutará automáticamente cada día a las 3 PM UTC
 3. Haz clic en "Run workflow" para ejecutarlo manualmente y probar
-4. Revisa los logs para confirmar que el email se envió correctamente
+4. Revisa los logs para confirmar que la notificación se envió correctamente
+5. Verifica que recibiste la notificación en tu dispositivo con la app ntfy
 
 ## Contribución
 
