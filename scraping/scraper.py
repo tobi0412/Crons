@@ -23,11 +23,7 @@ async def scrape_futbin_cheapest():
         try:
             # Siempre usa headless para compatibilidad
             print("🤖 Iniciando navegador en modo headless...")
-            browser = await uc.start(
-            headless=True,
-            browser_executable_path='/usr/bin/chromium-browser',
-            extra_browser_args=['--no-sandbox']
-        )
+            browser = await uc.start(headless=True)
         except Exception as init_error:
             print(f"❌ Error al inicializar el navegador: {init_error}")
             print(f"   Tipo: {type(init_error).__name__}")
