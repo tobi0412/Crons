@@ -14,10 +14,10 @@ jobs:
     
     steps:
     - name: Checkout código
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     
     - name: Configurar Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     
@@ -27,13 +27,7 @@ jobs:
         pip install -r requirements.txt
     
     - name: Instalar navegadores de Playwright
-      uses: microsoft/playwright-github-action@v1
-      with:
-        browsers: chromium
-    
-    - name: Verificar instalación de Playwright
-      run: |
-        playwright --version
+      run: python -m playwright install chromium --with-deps
     
     - name: Ejecutar scraper
       id: scraper
