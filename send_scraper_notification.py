@@ -71,11 +71,13 @@ def send_scraper_notification(prices_dict):
         headers = {
             "Title": title,
             "Priority": "default",
-            "Tags": "soccer,soccer_ball"
+            "Tags": "soccer,soccer_ball",
+            "Content-Type": "text/plain; charset=utf-8"
         }
         
         # Enviar la notificación
-        response = requests.post(url, data=message, headers=headers)
+        # Codificar el mensaje explícitamente como UTF-8 para soportar emojis
+        response = requests.post(url, data=message.encode('utf-8'), headers=headers)
         
         if response.status_code == 200:
             print(f"✅ Notificación enviada exitosamente")
