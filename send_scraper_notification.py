@@ -20,18 +20,18 @@ def format_prices(prices_dict):
         str: Texto formateado con los precios
     """
     if not prices_dict:
-        return "❌ No se pudieron obtener precios"
+        return "[ERROR] No se pudieron obtener precios"
     
-    text = "💰 Precios FUTBIN:\n\n"
+    text = "PRECIOS FUTBIN:\n\n"
     
     for rating in [83, 84, 85, 86, 87, 88, 89, 90]:
         price = prices_dict.get(rating)
         if price is not None:
             # Formatear con separadores de miles
             formatted_price = f"{price:,}".replace(",", ".")
-            text += f"🔸 Rating {rating}: {formatted_price} coins\n"
+            text += f"- Rating {rating}: {formatted_price} coins\n"
         else:
-            text += f"🔸 Rating {rating}: N/A\n"
+            text += f"- Rating {rating}: N/A\n"
     
     return text
 
@@ -48,20 +48,20 @@ def send_scraper_notification(prices_dict):
     
     # Verificar que el tópico esté configurado
     if not ntfy_topic:
-        print("⚠️ NTFY_TOPIC no está configurado, no se enviará notificación")
+        print("[ADVERTENCIA] NTFY_TOPIC no está configurado, no se enviará notificación")
         return False
     
     # Información de la ejecución
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
     
     # Contenido de la notificación
-    title = "⚽ FUTBIN - Precios Actualizados"
+    title = "FUTBIN - Precios Actualizados"
     
-    message = f"""⏰ {timestamp}
+    message = f"""[{timestamp}]
 
 {format_prices(prices_dict)}
 
-✅ Scraper completado exitosamente"""
+Scraper completado exitosamente"""
     
     try:
         # URL de la API de ntfy
@@ -76,19 +76,19 @@ def send_scraper_notification(prices_dict):
         }
         
         # Enviar la notificación
-        # Codificar el mensaje explícitamente como UTF-8 para soportar emojis
+        # Codificar el mensaje explícitamente como UTF-8
         response = requests.post(url, data=message.encode('utf-8'), headers=headers)
         
         if response.status_code == 200:
-            print(f"✅ Notificación enviada exitosamente")
-            print(f"📱 Tópico: {ntfy_topic}")
+            print(f"[OK] Notificación enviada exitosamente")
+            print(f"Topico: {ntfy_topic}")
             return True
         else:
-            print(f"❌ Error al enviar notificación: Status {response.status_code}")
+            print(f"[ERROR] Error al enviar notificación: Status {response.status_code}")
             return False
         
     except Exception as e:
-        print(f"❌ Error al enviar notificación: {str(e)}")
+        print(f"[ERROR] Error al enviar notificación: {str(e)}")
         return False
 
 def main():
@@ -98,8 +98,8 @@ def main():
     results_file = 'scraping_results.json'
     
     if not os.path.exists(results_file):
-        print(f"⚠️ No se encontró el archivo {results_file}")
-        print("💡 El scraper debería ejecutarse primero para generar este archivo")
+        print(f"[ADVERTENCIA] No se encontró el archivo {results_file}")
+        print("[INFO] El scraper debería ejecutarse primero para generar este archivo")
         return 0
     
     # Leer los resultados del scraper
@@ -107,17 +107,17 @@ def main():
         with open(results_file, 'r') as f:
             prices_dict = json.load(f)
     except Exception as e:
-        print(f"❌ Error al leer {results_file}: {e}")
+        print(f"[ERROR] Error al leer {results_file}: {e}")
         return 1
     
     # Enviar la notificación
     success = send_scraper_notification(prices_dict)
     
     if success:
-        print("✅ Proceso completado exitosamente")
+        print("[OK] Proceso completado exitosamente")
         return 0
     else:
-        print("❌ Proceso falló")
+        print("[ERROR] Proceso falló")
         return 1
 
 if __name__ == "__main__":
