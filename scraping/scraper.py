@@ -18,7 +18,8 @@ async def scrape_futbin_cheapest():
     browser = None
     try:
         print("🔄 Iniciando navegador...")
-        browser = await uc.start()
+        # Configurar para headless mode en CI
+        browser = await uc.start(headless=True)
         
         print("🌐 Navegando a futbin.com...")
         start_page = await browser.get("https://www.futbin.com")

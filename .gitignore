@@ -55,3 +55,6 @@ cron.error
 # Logs generados por los scripts
 logs/
 *.log
+
+# Resultados del scraper
+scraping_results.json

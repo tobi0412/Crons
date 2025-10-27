@@ -1,0 +1,66 @@
+name: FUTBIN Scraper
+
+on:
+  # Ejecuta una vez al día a las 3 PM UTC (9 AM hora local aproximadamente)
+  schedule:
+    - cron: '0 15 * * *'
+  # También se puede ejecutar manualmente
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Instalar dependencias del sistema (Chrome)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          google-chrome-stable \
+          chromium-browser \
+          libnss3 \
+          libatk-bridge2.0-0 \
+          libdrm2 \
+          libxkbcommon0 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxfixes3 \
+          libxrandr2 \
+          libgbm1 \
+          libxss1 \
+          libasound2 \
+          fonts-liberation
+    
+    - name: Instalar dependencias Python
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Configurar variables de entorno para headless
+      run: |
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x24 &
+    
+    - name: Ejecutar scraper
+      id: scraper
+      run: |
+        python run_scraper.py
+    
+    - name: Notificar resultados del scraper
+      env:
+        NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      if: success() || failure()
+      run: |
+        python send_scraper_notification.py || true
+      continue-on-error: true
+    
+

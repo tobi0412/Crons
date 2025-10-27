@@ -4,10 +4,29 @@
 Script para ejecutar el scraper de FUTBIN
 """
 
-import asyncio
+import sys
 import nodriver as uc
-from scraping.main import main
+
+def run_scraper():
+    """
+    Función wrapper para ejecutar el scraper
+    """
+    try:
+        uc.loop().run_until_complete(run_main())
+    except KeyboardInterrupt:
+        print("\n⚠️ Ejecución interrumpida por el usuario")
+        sys.exit(1)
+    except Exception as e:
+        print(f"\n❌ Error al ejecutar el scraper: {e}")
+        sys.exit(1)
+
+async def run_main():
+    """
+    Importa y ejecuta el main del módulo scraping
+    """
+    from scraping.main import main
+    await main()
 
 if __name__ == "__main__":
-    uc.loop().run_until_complete(main())
+    run_scraper()
 
