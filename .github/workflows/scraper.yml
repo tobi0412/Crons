@@ -8,18 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  scraper:
-    timeout-minutes: 60
+  scrape:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-node@v5
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+    timeout-minutes: 15
     
     steps:
     - name: Checkout código
@@ -34,6 +25,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    
+    # --- ESTE ES EL PASO CORREGIDO ---
+    # Se reemplaza la acción obsoleta 'microsoft/playwright-github-action@v1'
+    # por el comando moderno, como en tu primer archivo.
+    - name: Instalar navegadores de Playwright
+      run: python -m playwright install --with-deps chromium
     
     - name: Ejecutar scraper
       id: scraper
