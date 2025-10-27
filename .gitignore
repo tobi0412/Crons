@@ -51,3 +51,7 @@ build/
 # Archivos específicos de crons
 cron.log
 cron.error
+
+# Logs generados por los scripts
+logs/
+*.log

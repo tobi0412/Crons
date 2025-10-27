@@ -1,0 +1,54 @@
+name: Daily Email Cron Job
+
+on:
+  # Se ejecuta una vez al día a las 9 AM UTC
+  schedule:
+    - cron: '0 9 * * *'
+  # También se puede ejecutar manualmente
+  workflow_dispatch:
+
+jobs:
+  daily-email:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Mostrar información
+      run: |
+        echo "📧 Cron job de email ejecutado a las $(date)"
+        echo "🔔 Repositorio: ${{ github.repository }}"
+        echo "👤 Usuario: ${{ github.actor }}"
+        echo "🔢 Commit: ${{ github.sha }}"
+    
+    - name: Enviar email con SendGrid
+      env:
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+        EMAIL_TO: ${{ secrets.EMAIL_TO }}
+      run: |
+        python send_email.py
+    
+    - name: Crear archivo de log
+      run: |
+        mkdir -p logs
+        echo "Ejecución: $(date)" >> logs/cron-log.txt
+        echo "Usuario: ${{ github.actor }}" >> logs/cron-log.txt
+        echo "Commit: ${{ github.sha }}" >> logs/cron-log.txt
+        echo "Email enviado: ✅" >> logs/cron-log.txt
+        echo "---" >> logs/cron-log.txt
+    
+    - name: Mostrar contenido del log
+      run: |
+        cat logs/cron-log.txt || echo "No hay logs previos"
