@@ -52,17 +52,9 @@ jobs:
     - name: Instalar navegadores de Playwright
       run: python -m playwright install chromium
     
-    - name: Ejecutar scraper
-      id: scraper
+    - name: Ejecutar pipeline completo
       env:
         CI: 'true'
-      run: |
-        python run_scraper.py
-    
-    - name: Notificar resultados del scraper por ntfy
-      env:
         NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-      if: always()
       run: |
-        python send_scraper_notification.py || true
-      continue-on-error: true
+        python run_pipeline.py

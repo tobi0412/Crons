@@ -38,14 +38,7 @@ async def main():
                     print(f"Rating {rating}: Sin datos disponibles")
                     results_dict[rating] = None
             
-            # Guardar resultados en archivo JSON para la notificación
-            try:
-                with open('scraping_results.json', 'w') as f:
-                    json.dump(results_dict, f, indent=2)
-                print(f"\n💾 Resultados guardados en scraping_results.json")
-            except Exception as e:
-                print(f"\n⚠️ No se pudieron guardar los resultados: {e}")
-            
+            # Retornar los resultados directamente (sin guardar en archivo)
             return results_dict
     else:
         print("\n❌ El scraping no pudo completarse")
