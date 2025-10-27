@@ -37,10 +37,11 @@ jobs:
         MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
         EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
         EMAIL_TO: ${{ secrets.EMAIL_TO }}
-      echo "MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}"
-      echo "EMAIL_FROM: ${{ secrets.EMAIL_FROM }}"
-      echo "EMAIL_TO: ${{ secrets.EMAIL_TO }}"
+      
       run: |
+        echo "MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}"
+        echo "EMAIL_FROM: ${{ secrets.EMAIL_FROM }}"
+        echo "EMAIL_TO: ${{ secrets.EMAIL_TO }}"
         python send_email.py
     
     - name: Crear archivo de log
