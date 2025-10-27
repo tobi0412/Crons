@@ -21,7 +21,7 @@ def send_daily_email():
     # Verificar que todas las variables estén configuradas
     if not all([api_key, email_from, email_to]):
         print("❌ Error: Faltan variables de entorno requeridas")
-        print("Se necesitan: SENDGRID_API_KEY, EMAIL_FROM, EMAIL_TO")
+        print("Se necesitan: MAIL_API_KEY, EMAIL_FROM, EMAIL_TO")
         return False
     
     # Información de la ejecución

@@ -34,7 +34,7 @@ jobs:
     
     - name: Enviar email con SendGrid
       env:
-        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
         EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
         EMAIL_TO: ${{ secrets.EMAIL_TO }}
       run: |

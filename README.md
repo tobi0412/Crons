@@ -28,7 +28,7 @@ Para que el cron job funcione correctamente, necesitas configurar los siguientes
 
 #### Secrets Requeridos:
 
-- **`SENDGRID_API_KEY`**: Tu API key de SendGrid
+- **`MAIL_API_KEY`**: Tu API key de SendGrid
   - Obtén tu API key desde [SendGrid Dashboard](https://app.sendgrid.com/settings/api_keys)
   
 - **`EMAIL_FROM`**: Email del remitente
@@ -56,7 +56,7 @@ bash test-cron.sh
 python3 test-cron.py
 
 # Ejecutar script de email (requiere variables de entorno)
-export SENDGRID_API_KEY="tu_api_key"
+export MAIL_API_KEY="tu_api_key"
 export EMAIL_FROM="tu_email@dominio.com"
 export EMAIL_TO="destinatario@email.com"
 python3 send_email.py
