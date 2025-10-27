@@ -1,4 +1,4 @@
-name: Daily Email Cron Job
+name: NTFY Cron Job
 
 on:
   # Se ejecuta una vez al día a las 9 AM UTC
