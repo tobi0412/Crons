@@ -21,9 +21,32 @@ async def scrape_futbin_cheapest():
         print("🔄 Iniciando navegador...")
         
         try:
-            # Siempre usa headless para compatibilidad
-            print("🤖 Iniciando navegador en modo headless...")
-            browser = await uc.start(headless=True)
+            # Configuración específica para CI/GitHub Actions
+            is_ci = os.getenv('CI') == 'true'
+            
+            if is_ci:
+                print("🤖 Modo CI detectado - configurando para GitHub Actions...")
+                
+                # Configuración para nodriver en CI
+                config = uc.Config(
+                    browser_executable_path='/usr/bin/chromium-browser',
+                    headless=True,
+                    browser_args=[
+                        '--no-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-gpu',
+                        '--disable-software-rasterizer',
+                        '--disable-extensions',
+                        '--disable-setuid-sandbox',
+                        '--single-process',
+                        '--no-zygote',
+                    ]
+                )
+                browser = await uc.start(config=config)
+            else:
+                print("🤖 Iniciando navegador en modo headless...")
+                browser = await uc.start(headless=True)
+                
         except Exception as init_error:
             print(f"❌ Error al inicializar el navegador: {init_error}")
             print(f"   Tipo: {type(init_error).__name__}")
@@ -163,4 +186,4 @@ async def scrape_futbin_cheapest():
             except Exception as close_error:
                 print(f"⚠️ Error al cerrar navegador: {close_error}")
                 pass
-
+            

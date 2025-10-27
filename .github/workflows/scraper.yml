@@ -21,44 +21,12 @@ jobs:
       with:
         python-version: '3.11'
     
-    - name: Instalar dependencias del sistema
+    - name: Instalar Chrome y dependencias
       run: |
         sudo apt-get update
         sudo apt-get install -y \
-          wget \
-          gnupg \
-          ca-certificates \
-          fonts-liberation \
-          libasound2 \
-          libatk-bridge2.0-0 \
-          libatk1.0-0 \
-          libatspi2.0-0 \
-          libcups2 \
-          libdbus-1-3 \
-          libdrm2 \
-          libgbm1 \
-          libgtk-3-0 \
-          libnspr4 \
-          libnss3 \
-          libx11-6 \
-          libx11-xcb1 \
-          libxcb1 \
-          libxcomposite1 \
-          libxdamage1 \
-          libxext6 \
-          libxfixes3 \
-          libxkbcommon0 \
-          libxrandr2 \
-          libxss1 \
-          libxtst6 \
-          xdg-utils
-    
-    - name: Instalar Chrome
-      run: |
-        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-        sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+          chromium-browser \
+          chromium-chromedriver
     
     - name: Instalar dependencias Python
       run: |
@@ -67,13 +35,14 @@ jobs:
     
     - name: Verificar Chrome instalado
       run: |
-        which google-chrome || echo "Chrome no encontrado en PATH"
-        google-chrome --version || echo "No se puede obtener versión de Chrome"
+        which chromium-browser || echo "Chromium no encontrado"
+        chromium-browser --version || echo "No se puede obtener versión"
     
     - name: Ejecutar scraper
       id: scraper
       env:
         CI: 'true'
+        DISPLAY: ':99'
       run: |
         python run_scraper.py
     
