@@ -134,4 +134,3 @@ def get_price_history(rating, limit=10):
     except Exception as e:
         print(f"[ERROR] Error al obtener historial: {e}")
         return None
-

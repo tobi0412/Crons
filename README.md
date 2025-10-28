@@ -73,15 +73,20 @@ schedule:
 ```
 .
 ├── run_pipeline.py           # Pipeline completo (scraper + BD + notificaciones)
-├── database.py                # Manejo de Supabase
-├── send_scraper_notification.py  # Envío de notificaciones por ntfy
-├── scraping/
-│   ├── main.py                # Función principal del scraper
-│   ├── scraper.py             # Scraping con Playwright
-│   ├── price_extractor.py     # Extracción de precios
-│   └── ratings_processor.py   # Procesamiento de ratings
+├── database/                 # Módulo de base de datos
+│   ├── __init__.py
+│   └── database.py           # Manejo de Supabase
+├── notifications/            # Módulo de notificaciones
+│   ├── __init__.py
+│   └── notifications.py      # Envío de notificaciones por ntfy
+├── scraping/                 # Módulo de scraping
+│   ├── __init__.py
+│   ├── main.py               # Función principal del scraper
+│   ├── scraper.py            # Scraping con Playwright
+│   ├── price_extractor.py    # Extracción de precios
+│   └── ratings_processor.py  # Procesamiento de ratings
 └── .github/workflows/
-    └── scraper.yml            # Workflow de GitHub Actions
+    └── scraper.yml           # Workflow de GitHub Actions
 ```
 
 ## Ventajas de Supabase

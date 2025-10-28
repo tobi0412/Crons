@@ -18,7 +18,7 @@ def run_complete_pipeline():
     
     try:
         # Paso 1: Inicializar base de datos
-        from database import init_database
+        from database.database import init_database
         init_database()
         print("[INFO] Base de datos inicializada")
         print()
@@ -48,7 +48,7 @@ def run_complete_pipeline():
         print("[INFO] Guardando precios en base de datos...")
         print()
         
-        from database import save_prices
+        from database.database import save_prices
         db_success = save_prices(result)
         
         if not db_success:
@@ -61,7 +61,7 @@ def run_complete_pipeline():
         print()
         
         # Usar los resultados directamente del scraper (sin JSON)
-        from send_scraper_notification import send_scraper_notification
+        from notifications.notifications import send_scraper_notification
         success = send_scraper_notification(result)
         
         if success:
