@@ -9,7 +9,7 @@ import asyncio
 
 def run_complete_pipeline():
     """
-    Ejecuta el pipeline completo: scraper + notificaciones
+    Ejecuta el pipeline completo: scraper + guardar en BD + notificaciones
     """
     print("=" * 60)
     print("INICIANDO PIPELINE COMPLETO")
@@ -17,7 +17,13 @@ def run_complete_pipeline():
     print()
     
     try:
-        # Paso 1: Ejecutar el scraper
+        # Paso 1: Inicializar base de datos
+        from database import init_database
+        init_database()
+        print("[INFO] Base de datos inicializada")
+        print()
+        
+        # Paso 2: Ejecutar el scraper
         from scraping.main import main as scraper_main
         
         print("[INFO] Ejecutando scraper...")
@@ -38,7 +44,19 @@ def run_complete_pipeline():
         print("=" * 60)
         print()
         
-        # Paso 2: Enviar notificaciones
+        # Paso 3: Guardar en base de datos
+        print("[INFO] Guardando precios en base de datos...")
+        print()
+        
+        from database import save_prices
+        db_success = save_prices(result)
+        
+        if not db_success:
+            print("[ADVERTENCIA] No se pudieron guardar los precios en la base de datos")
+        
+        print()
+        
+        # Paso 4: Enviar notificaciones
         print("[INFO] Enviando notificaciones...")
         print()
         

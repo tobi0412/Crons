@@ -56,5 +56,7 @@ jobs:
       env:
         CI: 'true'
         NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       run: |
         python run_pipeline.py

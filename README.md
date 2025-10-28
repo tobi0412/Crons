@@ -1,113 +1,111 @@
-# Crons
+# FUTBIN Price Scraper
 
-Este es un repositorio privado para gestionar tareas programadas (crons) usando GitHub Actions con notificaciones ntfy.
+Scraper automático para obtener los precios más baratos de jugadores en FUTBIN con notificaciones por ntfy y almacenamiento en Supabase.
 
 ## Descripción
 
-Este repositorio contiene un cron job configurado con GitHub Actions que se ejecuta una vez al día (3 PM UTC) y envía una notificación de confirmación usando ntfy.
+Este proyecto ejecuta un scraper que obtiene los precios de los jugadores más baratos de FUTBIN para los ratings 83-90, y:
+- Envía notificaciones por ntfy
+- Almacena los datos en Supabase
+- Se ejecuta automáticamente cada hora
+
+## Configuración
+
+### 1. Secrets de GitHub Actions
+
+Configura estos secrets en tu repositorio:
+
+1. Ve a tu repositorio → **Settings** → **Secrets and variables** → **Actions**
+2. Agrega los siguientes secrets:
+
+- **`NTFY_TOPIC`**: Tu tópico de ntfy (ej: `8gCrkggZioO7OWrr`)
+- **`SUPABASE_URL`**: URL de tu proyecto Supabase (ej: `https://xxxxx.supabase.co`)
+- **`SUPABASE_KEY`**: Tu API Key anon/public de Supabase
+
+### 2. Configurar Supabase
+
+1. Crea una cuenta en [supabase.com](https://supabase.com)
+2. Crea un nuevo proyecto
+3. Ejecuta el SQL que está en `SUPABASE_SETUP.md` para crear la tabla
+4. Copia tu URL y API Key a los secrets de GitHub
+
+### 3. Para desarrollo local
+
+Crea un archivo `.env` con:
+
+```env
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_KEY=tu-supabase-anon-key
+NTFY_TOPIC=tu_topico_de_ntfy
+```
+
+## Ejecutar localmente
+
+```bash
+# Instalar dependencias
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# Ejecutar el pipeline completo
+python run_pipeline.py
+```
 
 ## GitHub Actions
 
-### Cron Job Diario con Notificaciones
+El workflow se encuentra en `.github/workflows/scraper.yml` y:
 
-El workflow se encuentra en `.github/workflows/cron-test.yml` y realiza las siguientes acciones:
-
-- ✅ Se ejecuta una vez al día a las 3 PM UTC (`0 15 * * *`)
-- ✅ Envía una notificación de confirmación usando ntfy API
-- ✅ Muestra información del sistema y del repositorio
-- ✅ Genera logs de cada ejecución
+- ✅ Se ejecuta cada hora automáticamente
+- ✅ Ejecuta el scraper de FUTBIN
+- ✅ Guarda los precios en Supabase
+- ✅ Envía notificaciones por ntfy
 - ✅ Se puede ejecutar manualmente desde GitHub Actions
 
-### Configuración de GitHub Secrets
+### Cron Schedule
 
-Para que el cron job funcione correctamente, necesitas configurar los siguientes secrets en tu repositorio de GitHub:
-
-1. Ve a tu repositorio en GitHub
-2. Haz clic en **Settings** → **Secrets and variables** → **Actions**
-3. Haz clic en **New repository secret** y agrega:
-
-#### Secrets Requeridos:
-
-- **`NTFY_TOPIC`**: Tu tópico personalizado de ntfy
-  - Ve a [ntfy.sh](https://ntfy.sh) y crea un tópico personalizado
-  - Ejemplo: `mi-cron-job` (se convertirá en `https://ntfy.sh/mi-cron-job`)
-  - Puedes usar cualquier nombre que quieras, pero evita espacios y caracteres especiales
-
-### Ejecutar manualmente
-
-1. Ve a la pestaña **Actions** en tu repositorio de GitHub
-2. Selecciona el workflow "Daily Email Cron Job"
-3. Haz clic en **Run workflow** → **Run workflow**
-
-## Configuración de ntfy
-
-Para recibir las notificaciones en tu dispositivo:
-
-1. **Descarga la app ntfy** desde [ntfy.sh/app](https://ntfy.sh/app)
-2. **Suscríbete a tu tópico** usando el mismo nombre que configuraste en `NTFY_TOPIC`
-3. **Recibirás notificaciones** cada vez que se ejecute el cron job
-
-## Scripts locales
-
-También puedes ejecutar los scripts localmente para probar:
-
-```bash
-# Ejecutar script en bash (Linux/Mac)
-bash test-cron.sh
-
-# Ejecutar script en Python
-python3 test-cron.py
-
-# Ejecutar script de notificación (requiere variables de entorno)
-export NTFY_TOPIC="mi-cron-job"
-python3 send_notification.py
-
-# Ejecutar script de email (requiere variables de entorno) - OPCIONAL
-export MAIL_API_KEY="tu_api_key"
-export EMAIL_FROM="tu_email@dominio.com"
-export EMAIL_TO="destinatario@email.com"
-python3 send_email.py
+```yaml
+schedule:
+  - cron: '0 * * * *'  # Cada hora a los 0 minutos
 ```
 
-## Uso
+## Estructura del proyecto
 
-### Configuración de GitHub Actions
-
-1. Inicializar Git (si no lo has hecho):
-```bash
-git init
+```
+.
+├── run_pipeline.py           # Pipeline completo (scraper + BD + notificaciones)
+├── database.py                # Manejo de Supabase
+├── send_scraper_notification.py  # Envío de notificaciones por ntfy
+├── scraping/
+│   ├── main.py                # Función principal del scraper
+│   ├── scraper.py             # Scraping con Playwright
+│   ├── price_extractor.py     # Extracción de precios
+│   └── ratings_processor.py   # Procesamiento de ratings
+└── .github/workflows/
+    └── scraper.yml            # Workflow de GitHub Actions
 ```
 
-2. Agregar archivos:
-```bash
-git add .
-```
+## Ventajas de Supabase
 
-3. Hacer commit:
-```bash
-git commit -m "feat: Add daily email cron job with SendGrid integration"
-```
+- ✅ Dashboard visual para ver gráficos de precios
+- ✅ API REST automática para consultar datos
+- ✅ No genera commits en el repositorio
+- ✅ Escala mejor con más datos
+- ✅ Plan gratuito generoso (500MB de BD)
+- ✅ Permite análisis avanzados de tendencias de precios
 
-4. Subir a GitHub:
-```bash
-# Crear el repositorio en GitHub y luego:
-git remote add origin https://github.com/TU_USUARIO/Crons.git
-git branch -M main
-git push -u origin main
-```
+## Ver logs
 
-### Verificar que funciona
+1. Ve a la pestaña **Actions** en tu repositorio
+2. Selecciona la ejecución más reciente
+3. Revisa los logs del workflow
 
-Una vez configurados los secrets y subido a GitHub:
-1. Ve a la pestaña **Actions**
-2. El workflow se ejecutará automáticamente cada día a las 3 PM UTC
-3. Haz clic en "Run workflow" para ejecutarlo manualmente y probar
-4. Revisa los logs para confirmar que la notificación se envió correctamente
-5. Verifica que recibiste la notificación en tu dispositivo con la app ntfy
+## Notificaciones
 
-## Contribución
+Para recibir notificaciones:
 
-Este es un repositorio privado.
+1. Descarga la app **ntfy** desde [ntfy.sh/app](https://ntfy.sh/app)
+2. Suscríbete al tópico que configuraste en `NTFY_TOPIC`
+3. Recibirás notificaciones cada hora con los precios actualizados
 
 ## Licencia
 

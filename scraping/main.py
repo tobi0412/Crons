@@ -32,7 +32,7 @@ async def main():
             results_dict = {}
             for rating, price in zip(ratings, results):
                 if price is not None:
-                    print(f"Rating {rating}: Precio = {price} coins")
+                    print(f"Rating {rating}: Precio = {price} monedas")
                     results_dict[rating] = price
                 else:
                     print(f"Rating {rating}: Sin datos disponibles")
