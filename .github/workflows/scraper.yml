@@ -1,9 +1,9 @@
 name: FUTBIN Scraper
 
 on:
-  # Ejecuta una vez al día a las 3 PM UTC (9 AM hora local aproximadamente)
+  # Ejecuta cada hora a los 0 minutos
   schedule:
-    - cron: '0 15 * * *'
+    - cron: '0 * * * *'
   # También se puede ejecutar manualmente
   workflow_dispatch:
 
