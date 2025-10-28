@@ -18,48 +18,42 @@ def calculate_price_for_rating(rating, all_prices_values):
     print(f"  📥 Valores recibidos: {all_prices_values}")
     
     if rating == 90:
-        # Para rating 90: solo el primer elemento
-        print(f"  ⚙️ Regla para rating 90: usar solo el primer elemento (índice 0)")
-        if all_prices_values[0] is not None:
+        # Para rating 90: primer elemento (índice 0)
+        print(f"  ⚙️ Regla para rating 90: usar el primer elemento (índice 0)")
+        if len(all_prices_values) > 0 and all_prices_values[0] is not None:
             print(f"  ✅ Valor encontrado: {all_prices_values[0]}")
             return all_prices_values[0]
         else:
-            print(f"  ❌ Primer elemento es None")
+            print(f"  ❌ Primer elemento no disponible")
             return None
             
     elif rating == 89:
-        # Para rating 89: promedio de elementos 1-3 (índices 0-2)
-        print(f"  ⚙️ Regla para rating 89: promedio de elementos 0-2 (primeros 3)")
-        values_to_average = all_prices_values[0:3]
-        print(f"  📊 Elementos para promediar: {values_to_average}")
-        valid_values = [v for v in values_to_average if v is not None]
-        print(f"  ✅ Valores válidos: {valid_values}")
-        
-        if valid_values and len(valid_values) > 0:
-            average_price = sum(valid_values) / len(valid_values)
-            print(f"  🧮 Promedio calculado: {average_price}")
-            result = round(average_price)
-            print(f"  💰 Resultado redondeado: {result}")
-            return result
+        # Para rating 89: tercer elemento (índice 2)
+        print(f"  ⚙️ Regla para rating 89: usar el tercer elemento (índice 2)")
+        if len(all_prices_values) > 2 and all_prices_values[2] is not None:
+            print(f"  ✅ Valor encontrado: {all_prices_values[2]}")
+            return all_prices_values[2]
         else:
-            print(f"  ❌ No hay valores válidos para promediar")
+            print(f"  ❌ Tercer elemento no disponible")
+            return None
+            
+    elif rating == 88:
+        # Para rating 88: cuarto elemento (índice 3)
+        print(f"  ⚙️ Regla para rating 88: usar el cuarto elemento (índice 3)")
+        if len(all_prices_values) > 3 and all_prices_values[3] is not None:
+            print(f"  ✅ Valor encontrado: {all_prices_values[3]}")
+            return all_prices_values[3]
+        else:
+            print(f"  ❌ Cuarto elemento no disponible")
             return None
             
     else:
-        # Para el resto: promedio de elementos 2-5 (índices 1-4, ignorando el primero)
-        print(f"  ⚙️ Regla para rating {rating}: promedio de elementos 1-4 (ignorando el primero)")
-        values_to_average = all_prices_values[1:5]
-        print(f"  📊 Elementos para promediar: {values_to_average}")
-        valid_values = [v for v in values_to_average if v is not None]
-        print(f"  ✅ Valores válidos: {valid_values}")
-        
-        if valid_values and len(valid_values) > 0:
-            average_price = sum(valid_values) / len(valid_values)
-            print(f"  🧮 Promedio calculado: {average_price}")
-            result = round(average_price)
-            print(f"  💰 Resultado redondeado: {result}")
-            return result
+        # Para el resto (83-87): quinto elemento (índice 4)
+        print(f"  ⚙️ Regla para rating {rating}: usar el quinto elemento (índice 4)")
+        if len(all_prices_values) > 4 and all_prices_values[4] is not None:
+            print(f"  ✅ Valor encontrado: {all_prices_values[4]}")
+            return all_prices_values[4]
         else:
-            print(f"  ❌ No hay valores válidos para promediar")
+            print(f"  ❌ Quinto elemento no disponible")
             return None
 
