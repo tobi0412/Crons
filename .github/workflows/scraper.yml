@@ -11,6 +11,8 @@ jobs:
   scrape:
     runs-on: ubuntu-22.04
     timeout-minutes: 15
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
     
     steps:
     - name: Checkout código
@@ -48,6 +50,14 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    
+    - name: Cache navegadores de Playwright
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-ms-playwright-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-ms-playwright-
     
     - name: Instalar navegadores de Playwright
       run: python -m playwright install chromium
